@@ -30,7 +30,7 @@ export function notificationRouter(c: AppContainer): Router {
     '/:id/read',
     validateParams(IdParams),
     asyncHandler(async (req, res) => {
-      res.json(await mark.execute(req.auth!.userId, req.params.id));
+      res.json(await mark.execute(req.auth!.userId, req.params.id!));
     }),
   );
 

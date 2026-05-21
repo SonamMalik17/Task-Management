@@ -74,7 +74,9 @@ export class MongoTaskRepository implements ITaskRepository {
   }
 
   async nextPositionInStatus(boardId: string, status: TaskStatus): Promise<number> {
-    const last = await TaskModel.findOne({ boardId, status }).sort({ position: -1 }).lean();
+    const last = (await TaskModel.findOne({ boardId, status })
+      .sort({ position: -1 })
+      .lean()) as { position: number } | null;
     // Step by 1024 so we can split between siblings ~10 times before needing
     // to re-pack positions.
     return last ? last.position + 1024 : 1024;

@@ -16,7 +16,7 @@ const userSchema = new Schema(
 // case a query result leaks into a response by mistake.
 userSchema.set('toJSON', {
   virtuals: true,
-  transform: (_doc, ret) => {
+  transform: (_doc, ret: Record<string, unknown>) => {
     delete ret.passwordHash;
     delete ret.__v;
     return ret;

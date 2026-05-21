@@ -52,7 +52,7 @@ export function taskRouter(c: AppContainer): Router {
     validateParams(IdParams),
     validateBody(UpdateTaskInputSchema),
     asyncHandler(async (req, res) => {
-      res.json(await update.execute(req.auth!.userId, req.params.id, req.body));
+      res.json(await update.execute(req.auth!.userId, req.params.id!, req.body));
     }),
   );
 
@@ -61,7 +61,7 @@ export function taskRouter(c: AppContainer): Router {
     validateParams(IdParams),
     validateBody(MoveTaskInputSchema),
     asyncHandler(async (req, res) => {
-      res.json(await move.execute(req.auth!.userId, req.params.id, req.body));
+      res.json(await move.execute(req.auth!.userId, req.params.id!, req.body));
     }),
   );
 
@@ -69,7 +69,7 @@ export function taskRouter(c: AppContainer): Router {
     '/:id',
     validateParams(IdParams),
     asyncHandler(async (req, res) => {
-      await del.execute(req.auth!.userId, req.params.id);
+      await del.execute(req.auth!.userId, req.params.id!);
       res.status(204).end();
     }),
   );
@@ -81,7 +81,7 @@ export function taskRouter(c: AppContainer): Router {
     asyncHandler(async (req, res) => {
       res
         .status(201)
-        .json(await addComment.execute(req.auth!.userId, req.params.id, req.body.body));
+        .json(await addComment.execute(req.auth!.userId, req.params.id!, req.body.body));
     }),
   );
 
@@ -90,7 +90,7 @@ export function taskRouter(c: AppContainer): Router {
     validateParams(IdParams),
     validateBody(AssignBody),
     asyncHandler(async (req, res) => {
-      res.json(await assign.execute(req.auth!.userId, req.params.id, req.body.assigneeIds));
+      res.json(await assign.execute(req.auth!.userId, req.params.id!, req.body.assigneeIds));
     }),
   );
 

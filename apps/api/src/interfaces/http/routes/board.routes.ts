@@ -41,7 +41,7 @@ export function boardRouter(c: AppContainer): Router {
     '/:id',
     validateParams(IdParams),
     asyncHandler(async (req, res) => {
-      res.json(await getBoard.execute(req.auth!.userId, req.params.id));
+      res.json(await getBoard.execute(req.auth!.userId, req.params.id!));
     }),
   );
 
@@ -50,7 +50,7 @@ export function boardRouter(c: AppContainer): Router {
     validateParams(IdParams),
     validateBody(InviteMemberInputSchema),
     asyncHandler(async (req, res) => {
-      res.status(201).json(await invite.execute(req.auth!.userId, req.params.id, req.body));
+      res.status(201).json(await invite.execute(req.auth!.userId, req.params.id!, req.body));
     }),
   );
 

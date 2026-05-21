@@ -21,7 +21,7 @@ export function activityRouter(c: AppContainer): Router {
     validateQuery(Query),
     asyncHandler(async (req, res) => {
       const { limit } = req.query as unknown as { limit: number };
-      res.json(await list.execute(req.auth!.userId, req.params.boardId, limit));
+      res.json(await list.execute(req.auth!.userId, req.params.boardId!, limit));
     }),
   );
 

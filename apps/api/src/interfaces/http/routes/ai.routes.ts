@@ -39,7 +39,7 @@ export function aiRouter(c: AppContainer): Router {
     '/summarize-task/:id',
     validateParams(TaskIdParams),
     asyncHandler(async (req, res) => {
-      res.json(await summarize.execute(req.auth!.userId, req.params.id));
+      res.json(await summarize.execute(req.auth!.userId, req.params.id!));
     }),
   );
 

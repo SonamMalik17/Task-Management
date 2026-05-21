@@ -27,7 +27,13 @@ function extractJSON(text: string): string {
 
 // Validate every LLM response against the schema. If parsing fails, throw an
 // AIError — the use-case decides whether to retry or surface to the user.
-function parseStructured<T>(raw: string, schema: z.ZodType<T>, operation: string): T {
+// Generic over the schema (not its inferred T) so the caller gets the OUTPUT
+// type back, including any Zod `.default()` substitutions.
+function parseStructured<S extends z.ZodTypeAny>(
+  raw: string,
+  schema: S,
+  operation: string,
+): z.infer<S> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(extractJSON(raw));
