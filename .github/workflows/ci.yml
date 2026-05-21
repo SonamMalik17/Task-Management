@@ -6,7 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Test secrets — fine to publish; they're only used by Jest + Playwright CI runs.
+  JWT_ACCESS_SECRET: ci-access-secret-at-least-16-chars-long
+  JWT_REFRESH_SECRET: ci-refresh-secret-at-least-16-chars-long
+  MONGO_URI: mongodb://localhost:27017/test
+
 jobs:
+  # Fast lane: typecheck + unit/integration tests for shared, api, web.
+  # The api integration tests boot mongodb-memory-server internally, so no
+  # external Mongo service is needed here.
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -17,8 +26,32 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run typecheck --workspaces --if-present
-      - run: npm test --workspaces --if-present
-        env:
-          MONGO_URI: mongodb://localhost:27017/test
-          JWT_ACCESS_SECRET: ci-access-secret-at-least-16-chars-long
-          JWT_REFRESH_SECRET: ci-refresh-secret-at-least-16-chars-long
+      # Explicit workspace list — excludes @ai-task/e2e (covered by the e2e job
+      # below, which needs Playwright browsers).
+      - run: npm test -w @ai-task/shared -w @ai-task/api -w @ai-task/web
+
+  # Slow lane: full Playwright run with the orchestrator booting an in-memory
+  # Mongo + the API + the Next.js dev server. Depends on verify so we don't
+  # spend ~30s on browser installs if a unit test already failed.
+  e2e:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      # --with-deps installs the OS libs Chromium needs on Ubuntu.
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/e2e
+      - run: npm test -w @ai-task/e2e
+      # Surface the Playwright HTML report when tests fail, so we can debug
+      # without re-running locally.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/e2e/playwright-report/
+          retention-days: 7
