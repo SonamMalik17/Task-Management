@@ -9,7 +9,7 @@ module.exports = {
     '^@ai-task/shared$': '<rootDir>/../../packages/shared/src/index.ts',
     '\\.(css|less|scss)$': '<rootDir>/src/test/styleMock.ts',
   },
-  setupFilesAfterEach: ['<rootDir>/src/test/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: { jsx: 'react-jsx', esModuleInterop: true } }],
   },

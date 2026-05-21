@@ -6,7 +6,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 // bearer-token auth — there's no SSR session story to support here.
 const STORAGE_KEY = 'ai-task-auth';
 
-interface AuthState {
+export interface AuthState {
   user: Omit<User, 'createdAt' | 'updatedAt'> | null;
   accessToken: string | null;
   refreshToken: string | null;

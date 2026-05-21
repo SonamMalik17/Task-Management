@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 // UI-only state: modals, selected task, AI panel visibility. Server state
 // (boards, tasks) lives in RTK Query — keep this slice small.
-interface UIState {
+export interface UIState {
   selectedTaskId: string | null;
   aiPanelOpen: boolean;
   toast: { message: string; tone: 'info' | 'error' | 'success' } | null;
